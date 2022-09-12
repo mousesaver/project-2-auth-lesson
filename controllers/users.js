@@ -16,7 +16,7 @@ router.post('', async (req, res) => {
         // store that new user's id as a cookie in the browser
         res.cookie('userId', user.id)
         // redirect tp the homepage
-        res.redirect('/')
+        res.redirect('/users/profile')
     } catch(err) {
         console.log(err)
     } 
@@ -46,7 +46,7 @@ router.post('/login', async (req, res) => {
         } else {
             console.log('loggin the user in')
             res.cookie('userId', user.id)
-            res.redirect('/')
+            res.redirect('/users/profile')
         }
     } catch (err) {
         console.log(err)
@@ -59,6 +59,15 @@ router.get('/logout', (req, res) => {
     res.clearCookie('userId')
     res.redirect('/')
 })
-
+router.get('/profile', (req, res) => {
+    // if the user is not logged ... we need to redirect to the login form
+    if (!res.locals.user) {
+        res.redirect('/users/login?message=You must authenticate before you are authorized to view this resource.')
+    } else {
+        res.render('users/profile', {
+            user: res.locals.user
+        })
+    }
+})
 
 module.exports = router;
